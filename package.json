@@ -1,0 +1,27 @@
+{
+  "name": "threejs-flying-kite",
+  "version": "1.0.0",
+  "description": "Zadanie pocitacova-grafika1",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Robert-Kovalcuk/threejs-flying-kite.git"
+  },
+  "keywords": [
+    "threejs"
+  ],
+  "author": "Robert kovalcuk, Samuel Schnelly",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Robert-Kovalcuk/threejs-flying-kite/issues"
+  },
+  "homepage": "https://github.com/Robert-Kovalcuk/threejs-flying-kite#readme",
+  "dependencies": {
+    "three": "^0.158.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}
