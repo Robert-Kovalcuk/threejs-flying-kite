@@ -20,9 +20,11 @@
   "homepage": "https://github.com/Robert-Kovalcuk/threejs-flying-kite#readme",
   "dependencies": {
     "dat.gui": "^0.7.9",
+    "nanoid": "^5.0.4",
+    "postcss": "^8.4.32",
     "three": "^0.158.0"
   },
   "devDependencies": {
-    "vite": "^5.0.0"
+    "vite": "^5.0.4"
   }
 }
