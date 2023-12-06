@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Robert-Kovalcuk/threejs-flying-kite#readme",
   "dependencies": {
+    "cannon": "^0.6.2",
     "dat.gui": "^0.7.9",
     "three": "^0.158.0"
   },
