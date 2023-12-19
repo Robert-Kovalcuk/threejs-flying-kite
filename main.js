@@ -12,16 +12,52 @@ import * as DAT from "dat.gui"
 import KITE_GEOMETRY from "./objects/kite/kiteGeometry";
 import KITE_MATERIAL from "./objects/kite/kiteMaterial";
 import createCannonBody from "./utils/createCannonBody";
-import createRestrictingBody from "./utils/createRestrictingBody";
-import scene from "three/addons/offscreen/scene";
+import {OBJLoader} from "three/addons";
 
 const SCENE = new THREE.Scene();
-const CAMERA = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const CAMERA = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
 const RENDERER = new THREE.WebGLRenderer({alpha: true});
 const AXIS_HELPER = new THREE.AxesHelper(6)
-const GRID_HELPER = new THREE.GridHelper(60, 100)
+//const GRID_HELPER = new THREE.GridHelper(60, 100)
 const GUI = new DAT.GUI()
 const WORLD = new CANNON.World()
+
+function loadObj() {
+	var loader = new OBJLoader();
+	var textureSurface = new THREE.TextureLoader().load('assets/kitie/kittie3.png');
+
+	loader.load(
+		// resource URL
+		'assets/kitie/kitie.obj',
+
+		function ( object ) {
+			// Traverse through all the meshes in the loaded object
+			object.traverse(function (child) {
+				if (child instanceof THREE.Mesh) {
+					// Set the material with the loaded texture
+					child.material = new THREE.MeshBasicMaterial({
+						map: textureSurface
+					});
+				}
+			});
+			SCENE.add(object);
+		},
+
+		// called when loading is in progress
+		function ( xhr ) {
+			console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+		},
+
+		// called when loading has errors
+		function ( error ) {
+			console.log('An error happened');
+		}
+	);
+}
+
+
+loadObj();
+
 
 const controls = new OrbitControls(CAMERA, RENDERER.domElement);
 const sphere = createMesh(SKY_GEOMETRY, SKY_MATERIAL, new THREE.Vector3(0, 0, 0), new THREE.Euler(0, 0, 0), true);
@@ -30,7 +66,8 @@ const skyBox1 = createMesh(SKYBOX_GEOMETRY, SKYBOX_MATERIAL, new THREE.Vector3(0
 const skyBox2 = createMesh(SKYBOX_GEOMETRY, SKYBOX_MATERIAL, new THREE.Vector3(0, (3.5 / 2) - 0.1, FLOOR_GEOMETRY.parameters.height / 2), new THREE.Euler(0, 0, 0), true);
 const skyBox3 = createMesh(SKYBOX_GEOMETRY, SKYBOX_MATERIAL, new THREE.Vector3(-FLOOR_GEOMETRY.parameters.height / 2, (3.5 / 2) - 0.1, 0), new THREE.Euler(0, Math.PI / 2, 0), true);
 const skyBox4 = createMesh(SKYBOX_GEOMETRY, SKYBOX_MATERIAL, new THREE.Vector3(FLOOR_GEOMETRY.parameters.height / 2, (3.5 / 2) - 0.1, 0), new THREE.Euler(0, -Math.PI / 2, 0), true);
-const kite = createMesh(KITE_GEOMETRY, KITE_MATERIAL, new THREE.Vector3(0, 2, 0), new THREE.Euler(0, 0, 0), false)
+const kite = createMesh(KITE_GEOMETRY, KITE_MATERIAL, new THREE.Vector3(0, 5, 0), new THREE.Euler(0, 0, 0), false)
+const string = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.01, 1, 32), new THREE.MeshBasicMaterial({color: 0x000000}))
 
 
 const kiteBody = createCannonBody(kite, 0.1)
@@ -39,7 +76,9 @@ WORLD.addBody(kiteBody)
 const floorBody = createCannonBody(floor, 0, new CANNON.Plane())
 floorBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0)
 WORLD.addBody(floorBody)
-
+CAMERA.position.z = 9;
+CAMERA.position.y = 1;
+CAMERA.position.x = 1;
 
 WORLD.gravity.set(0, -9.81, 0);
 
@@ -52,23 +91,42 @@ SCENE.add(
 	sphere,
 	kite,
 	AXIS_HELPER,
-	GRID_HELPER
+	//GRID_HELPER,
+	string
 );
 
 RENDERER.setSize(window.innerWidth, window.innerHeight);
-CAMERA.position.z = 15;
-CAMERA.position.y = 10;
-document.getElementById('canvas1').appendChild(RENDERER.domElement);
-const stringConstraint = new CANNON.PointToPointConstraint(
-	kiteBody,
-	new CANNON.Vec3(floorBody.position.x - 5, floorBody.position.y - 5, floorBody.position.z),
-	floorBody, floorBody.position, 0.02);
-WORLD.addConstraint(stringConstraint);
 
+document.getElementById('canvas1').appendChild(RENDERER.domElement);
+
+document.addEventListener("keypress", (e) => {
+	if (e.key === "q") {
+		// on Q i want to apply a bit stronger force so it pulls the kite down
+		console.log("q")
+		kiteBody.applyLocalImpulse(new CANNON.Vec3(-kiteBody.velocity.x * 0.108, -kiteBody.velocity.y * 0.108, -kiteBody.velocity.z * 0.108), new CANNON.Vec3(0, 0, 0))
+	}
+	if (e.key === "a") {
+		kiteBody.applyLocalImpulse(new CANNON.Vec3(-kiteBody.velocity.x * 0.308, 0, 0), new CANNON.Vec3(0, 0, 0))
+	}
+	if (e.key === "d") {
+		kiteBody.applyLocalImpulse(new CANNON.Vec3(kiteBody.velocity.x * 0.308, 0, 0), new CANNON.Vec3(0, 0, 0))
+	}
+	if (e.key === "e") {
+		kiteBody.applyLocalImpulse(new CANNON.Vec3(0, 0, -kiteBody.velocity.z * 0.308), new CANNON.Vec3(0, 0, 0))
+	}
+	if (e.key === "s") {
+		kiteBody.applyLocalImpulse(new CANNON.Vec3(0,  kiteBody.velocity.z * 0.308, 0), new CANNON.Vec3(0, 0, 0))
+	}
+})
+
+kiteBody.position.set(0, 6, 1); // Set initial position as needed
+kiteBody.velocity.set(0, 0, 0); // Set initial velocity as needed
+kiteBody.angularVelocity.set(0, 0, 0); // Set initial angular velocity as needed
+kiteBody.linearDamping = 0.3;
+
+let directionChanger = 0;
 (function animate() {
 	requestAnimationFrame(animate);
-
-	WORLD.step(1/60)
 
 	kite.position.copy(kiteBody.position)
 	kite.quaternion.copy(kiteBody.quaternion)
@@ -76,12 +134,30 @@ WORLD.addConstraint(stringConstraint);
 	floor.position.copy(floorBody.position);
 	floor.quaternion.copy(floorBody.quaternion);
 
-	// Apply air control forces
-	const airControlForce = 0.1; // Adjust the force as needed
+	if(directionChanger > 180) {
+		const windDirection = new CANNON.Vec3(-Math.random() * 10, Math.random() + 0.5, -Math.random() * 0.1);
+		kiteBody.applyLocalForce(windDirection, new CANNON.Vec3(0, 0, 0))
+		directionChanger = 0
+	} else {
+		const windDirection = new CANNON.Vec3(Math.random() * 0.1, Math.random() + 0.5, -Math.random() * 0.1);
+		kiteBody.applyLocalForce(windDirection, new CANNON.Vec3(0, 0, 0))
+	}
+	directionChanger++
 
-	stringConstraint.update();
-	kiteBody.applyLocalForce(new CANNON.Vec3(0, 0, -1.4), kiteBody.position);
+	sphere.rotation.z += 0.0002;
+	CAMERA.lookAt(kite.position.x, kite.position.y, kite.position.z)
 
+	// set the string length to the distance between the kite and the floor
+
+	string.position.copy(kite.position.clone().add(new THREE.Vector3(0, -string.scale.y / 2, 0))); // Adjust the offset as needed
+
+	// const direction = new THREE.Vector3();
+	// ;
+	// direction.sub(string.position);
+	// string.scale.y = kite.position.distanceTo(floor.position);
+	// string.rotation.setFromRotationMatrix(new THREE.Matrix4().lookAt(direction, new THREE.Vector3(0, kiteBody.position.y, 0), new THREE.Vector3(0, 0, 1)));
+
+	WORLD.step(1/60)
 	RENDERER.render(SCENE, CAMERA);
 	controls.update();
 })();
