@@ -19,7 +19,12 @@ const CAMERA = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerH
 const RENDERER = new THREE.WebGLRenderer({alpha: true});
 const AXIS_HELPER = new THREE.AxesHelper(6)
 //const GRID_HELPER = new THREE.GridHelper(60, 100)
-const GUI = new DAT.GUI()
+const GUI = new DAT.GUI();
+GUI.add(CAMERA.position, 'x', -10, 10);
+GUI.add(CAMERA.position, 'y', -10, 10);
+GUI.add(CAMERA.position, 'z', -10, 10);
+
+
 const WORLD = new CANNON.World()
 
 function loadObj() {
@@ -119,10 +124,15 @@ document.addEventListener("keypress", (e) => {
 	}
 })
 
-kiteBody.position.set(0, 6, 1); // Set initial position as needed
-kiteBody.velocity.set(0, 0, 0); // Set initial velocity as needed
-kiteBody.angularVelocity.set(0, 0, 0); // Set initial angular velocity as needed
-kiteBody.linearDamping = 0.3;
+// do the same logic for GUI
+GUI.add(kiteBody.velocity, 'x', -10, 10);
+GUI.add(kiteBody.velocity, 'y', -10, 10);
+GUI.add(kiteBody.velocity, 'z', -10, 10);
+
+kiteBody.position.set(0, 6, 1);
+kiteBody.velocity.set(0, 0, 0);
+kiteBody.angularVelocity.set(0, 0, 0);
+kiteBody.linearDamping = 0.3; // Some air resistance
 
 let directionChanger = 0;
 (function animate() {
