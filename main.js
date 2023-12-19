@@ -24,6 +24,12 @@ GUI.add(CAMERA.position, 'x', -10, 10);
 GUI.add(CAMERA.position, 'y', -10, 10);
 GUI.add(CAMERA.position, 'z', -10, 10);
 
+const color = 0xFFFFFF;
+const near = 1;
+const far = 22;
+SCENE.fog = new THREE.Fog(color, near, far);
+
+
 
 const WORLD = new CANNON.World()
 
@@ -74,6 +80,12 @@ const skyBox4 = createMesh(SKYBOX_GEOMETRY, SKYBOX_MATERIAL, new THREE.Vector3(F
 const kite = createMesh(KITE_GEOMETRY, KITE_MATERIAL, new THREE.Vector3(0, 5, 0), new THREE.Euler(0, 0, 0), false)
 const string = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.01, 1, 32), new THREE.MeshBasicMaterial({color: 0x000000}))
 
+sphere.material.fog = false;
+
+skyBox1.renderOrder = 1;
+skyBox2.renderOrder = 1;
+skyBox3.renderOrder = 1;
+skyBox4.renderOrder = 1;
 
 const kiteBody = createCannonBody(kite, 0.1)
 WORLD.addBody(kiteBody)
@@ -101,6 +113,10 @@ SCENE.add(
 );
 
 RENDERER.setSize(window.innerWidth, window.innerHeight);
+
+const sun = new THREE.PointLight(0xffff00, 1);
+sun.position.set(5, 3, 5);
+SCENE.add(sun);
 
 document.getElementById('canvas1').appendChild(RENDERER.domElement);
 
