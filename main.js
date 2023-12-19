@@ -73,7 +73,7 @@ document.getElementById('canvas1').appendChild(RENDERER.domElement);
 	RENDERER.render(SCENE, CAMERA);
 
 	// test hranice pre zem
-
+	
 	if ( CAMERA.position.y < floor.position.y + 0.5 ) {
 		CAMERA.position.y = floor.position.y + 0.5;
 	}
