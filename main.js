@@ -144,6 +144,7 @@ document.addEventListener("keypress", (e) => {
 GUI.add(kiteBody.velocity, 'x', -10, 10);
 GUI.add(kiteBody.velocity, 'y', -10, 10);
 GUI.add(kiteBody.velocity, 'z', -10, 10);
+GUI.add(kiteBody, 'linearDamping', 0, 1);
 
 kiteBody.position.set(0, 6, 1);
 kiteBody.velocity.set(0, 0, 0);
