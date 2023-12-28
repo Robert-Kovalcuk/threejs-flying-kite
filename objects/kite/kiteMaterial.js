@@ -4,7 +4,7 @@ const KITE_MATERIAL = new THREE.MeshBasicMaterial({color: 0x00ff00, side: THREE.
 
 // load from image
 const KITE_MATERIAL2 = new THREE.MeshBasicMaterial({
-    map: new THREE.TextureLoader().load('assets/kitie/kittie3.png'),
+    map: new THREE.TextureLoader().load( localStorage.getItem('kitie_texture') || '/assets/kitie/kittie3.png' ),
     side: THREE.DoubleSide,
     transparent: true
 });

@@ -20,13 +20,22 @@ const RENDERER = new THREE.WebGLRenderer({alpha: true});
 const AXIS_HELPER = new THREE.AxesHelper(6)
 //const GRID_HELPER = new THREE.GridHelper(60, 100)
 const GUI = new DAT.GUI();
-GUI.add(CAMERA.position, 'x', -10, 10);
-GUI.add(CAMERA.position, 'y', -10, 10);
-GUI.add(CAMERA.position, 'z', -10, 10);
+
+GUI.add(CAMERA.position, 'x', -10, 10)
+	.setValue(parseInt(localStorage.getItem('camera_position_x')) || 0)
+	.onChange((value) => { localStorage.setItem('camera_position_x', value); });
+
+GUI.add(CAMERA.position, 'y', -10, 10)
+	.setValue(parseInt(localStorage.getItem('camera_position_y')) || 0)
+	.onChange((value) => { localStorage.setItem('camera_position_y', value); });
+
+GUI.add(CAMERA.position, 'z', -10, 10)
+	.setValue(parseInt(localStorage.getItem('camera_position_z')) || 0)
+	.onChange((value) => { localStorage.setItem('camera_position_z', value); });
 
 const color = 0xFFFFFF;
 const near = 1;
-const far = 22;
+const far = parseInt(localStorage.getItem('far')) || 22;
 SCENE.fog = new THREE.Fog(color, near, far);
 
 
@@ -141,19 +150,76 @@ document.addEventListener("keypress", (e) => {
 })
 
 // do the same logic for GUI
-GUI.add(kiteBody.velocity, 'x', -10, 10);
-GUI.add(kiteBody.velocity, 'y', -10, 10);
-GUI.add(kiteBody.velocity, 'z', -10, 10);
-GUI.add(kiteBody, 'linearDamping', 0, 1);
-GUI.add(SCENE.fog, 'far', 0, 100);
+GUI.add(kiteBody.velocity, 'x', -10, 10)
+	.setValue(parseInt(localStorage.getItem('kitie_velocity_x')) || 0)
+	.onChange((value) => { localStorage.setItem('kitie_velocity_x', value); });
+
+GUI.add(kiteBody.velocity, 'y', -10, 10)
+	.setValue(parseInt(localStorage.getItem('kitie_velocity_y')) || 0)
+	.onChange((value) => { localStorage.setItem('kitie_velocity_y', value); });
+
+GUI.add(kiteBody.velocity, 'z', -10, 10)
+	.setValue(parseInt(localStorage.getItem('kitie_velocity_z')) || 0)
+	.onChange((value) => { localStorage.setItem('kitie_velocity_z', value); });
+
+GUI.add(kiteBody, 'linearDamping', 0, 1)
+	.setValue(parseInt(localStorage.getItem('linearDamping')) || 0)
+	.onChange((value) => { localStorage.setItem('linearDamping', value); });
+
+GUI.add(SCENE.fog, 'far', 0, 100)
+	.setValue(parseInt(localStorage.getItem('far')) || 22)
+	.onChange((value) => { localStorage.setItem('far', value); })
+
+CAMERA.position.x = parseInt(localStorage.getItem('camera_position_x')) || 0;
+CAMERA.position.y = parseInt(localStorage.getItem('camera_position_y')) || 0;
+CAMERA.position.z = parseInt(localStorage.getItem('camera_position_z')) || 0;
+
+kiteBody.velocity.x = parseInt(localStorage.getItem('kitie_velocity_x')) || 0;
+kiteBody.velocity.y = parseInt(localStorage.getItem('kitie_velocity_y')) || 0;
+kiteBody.velocity.z = parseInt(localStorage.getItem('kitie_velocity_z')) || 0;
 
 let rst = { reset_position:() => {
 	
 	kiteBody.position.set(0, 6, 1);
 	
 }};
+
 GUI.add( rst, 'reset_position');
 
+// kitie textures
+
+let kitieTextures = {
+	kitie1: () => {
+		localStorage.setItem('kitie_texture', '/assets/kitie/kittie1.png');
+		kite.material = new THREE.MeshBasicMaterial({
+			map: new THREE.TextureLoader().load('/assets/kitie/kittie1.png'),
+			side: THREE.DoubleSide,
+			transparent: true
+		});
+	},
+	kitie2: () => {
+		localStorage.setItem('kitie_texture', '/assets/kitie/kittie2.png');
+		kite.material = new THREE.MeshBasicMaterial({
+			map: new THREE.TextureLoader().load('/assets/kitie/kittie2.png'),
+			side: THREE.DoubleSide,
+			transparent: true
+		});
+	},
+	kitie3: () => {
+		localStorage.setItem('kitie_texture', '/assets/kitie/kittie3.png');
+		kite.material = new THREE.MeshBasicMaterial({
+			map: new THREE.TextureLoader().load('/assets/kitie/kittie3.png'),
+			side: THREE.DoubleSide,
+			transparent: true
+		});
+	}
+};
+
+const cameraFolder = GUI.addFolder('Textury');
+cameraFolder.add(kitieTextures, 'kitie1');
+cameraFolder.add(kitieTextures, 'kitie2');
+cameraFolder.add(kitieTextures, 'kitie3');
+cameraFolder.open();
 
 
 kiteBody.position.set(0, 6, 1);
@@ -197,4 +263,5 @@ let directionChanger = 0;
 	WORLD.step(1/60)
 	RENDERER.render(SCENE, CAMERA);
 	controls.update();
+
 })();
