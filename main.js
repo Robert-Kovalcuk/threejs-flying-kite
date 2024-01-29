@@ -18,7 +18,6 @@ const SCENE = new THREE.Scene();
 const CAMERA = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
 const RENDERER = new THREE.WebGLRenderer({alpha: true});
 const AXIS_HELPER = new THREE.AxesHelper(6)
-//const GRID_HELPER = new THREE.GridHelper(60, 100)
 const GUI = new DAT.GUI();
 
 GUI.add(CAMERA.position, 'x', -10, 10)
@@ -131,8 +130,6 @@ document.getElementById('canvas1').appendChild(RENDERER.domElement);
 
 document.addEventListener("keypress", (e) => {
 	if (e.key === "q") {
-		// on Q i want to apply a bit stronger force so it pulls the kite down
-		console.log("q")
 		kiteBody.applyLocalImpulse(new CANNON.Vec3(-kiteBody.velocity.x * 0.108, -kiteBody.velocity.y * 0.108, -kiteBody.velocity.z * 0.108), new CANNON.Vec3(0, 0, 0))
 	}
 	if (e.key === "a") {
@@ -149,7 +146,6 @@ document.addEventListener("keypress", (e) => {
 	}
 })
 
-// do the same logic for GUI
 GUI.add(kiteBody.velocity, 'x', -10, 10)
 	.setValue(parseInt(localStorage.getItem('kitie_velocity_x')) || 0)
 	.onChange((value) => { localStorage.setItem('kitie_velocity_x', value); });
@@ -250,15 +246,7 @@ let directionChanger = 0;
 	sphere.rotation.z += 0.0002;
 	CAMERA.lookAt(kite.position.x, kite.position.y, kite.position.z)
 
-	// set the string length to the distance between the kite and the floor
-
-	string.position.copy(kite.position.clone().add(new THREE.Vector3(0, -string.scale.y / 2, 0))); // Adjust the offset as needed
-
-	// const direction = new THREE.Vector3();
-	// ;
-	// direction.sub(string.position);
-	// string.scale.y = kite.position.distanceTo(floor.position);
-	// string.rotation.setFromRotationMatrix(new THREE.Matrix4().lookAt(direction, new THREE.Vector3(0, kiteBody.position.y, 0), new THREE.Vector3(0, 0, 1)));
+	string.position.copy(kite.position.clone().add(new THREE.Vector3(0, -string.scale.y / 2, 0)));
 
 	WORLD.step(1/60)
 	RENDERER.render(SCENE, CAMERA);
