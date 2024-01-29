@@ -75,7 +75,7 @@ function loadObj() {
 }
 
 
-loadObj();
+// loadObj();
 
 
 const controls = new OrbitControls(CAMERA, RENDERER.domElement);
