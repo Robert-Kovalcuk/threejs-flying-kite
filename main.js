@@ -166,14 +166,6 @@ GUI.add(SCENE.fog, 'far', 0, 100)
 	.setValue(parseInt(localStorage.getItem('far')) || 22)
 	.onChange((value) => { localStorage.setItem('far', value); })
 
-CAMERA.position.x = parseInt(localStorage.getItem('camera_position_x')) || 0;
-CAMERA.position.y = parseInt(localStorage.getItem('camera_position_y')) || 0;
-CAMERA.position.z = parseInt(localStorage.getItem('camera_position_z')) || 0;
-
-kiteBody.velocity.x = parseInt(localStorage.getItem('kitie_velocity_x')) || 0;
-kiteBody.velocity.y = parseInt(localStorage.getItem('kitie_velocity_y')) || 0;
-kiteBody.velocity.z = parseInt(localStorage.getItem('kitie_velocity_z')) || 0;
-
 let rst = { reset_position:() => {
 	
 	kiteBody.position.set(0, 6, 1);
@@ -221,7 +213,17 @@ cameraFolder.open();
 kiteBody.position.set(0, 6, 1);
 kiteBody.velocity.set(0, 0, 0);
 kiteBody.angularVelocity.set(0, 0, 0);
-kiteBody.linearDamping = 0.3; // Some air resistance
+
+
+CAMERA.position.x = parseInt(localStorage.getItem('camera_position_x')) || 0;
+CAMERA.position.y = parseInt(localStorage.getItem('camera_position_y')) || 0;
+CAMERA.position.z = parseInt(localStorage.getItem('camera_position_z')) || 0;
+
+kiteBody.velocity.x = parseInt(localStorage.getItem('kitie_velocity_x')) || 0;
+kiteBody.velocity.y = parseInt(localStorage.getItem('kitie_velocity_y')) || 0;
+kiteBody.velocity.z = parseInt(localStorage.getItem('kitie_velocity_z')) || 0;
+
+kiteBody.linearDamping = parseInt(localStorage.getItem('linearDamping')) || 0; // Some air resistance
 
 let directionChanger = 0;
 (function animate() {
